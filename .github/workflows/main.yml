@@ -12,6 +12,11 @@ jobs:
       runs-on:
         - ubuntu-latest
       steps:
+        - name: "Using flutter version"
+          uses: subosito/flutter-action@v2
+          with:
+               flutter-version: 'stable'
+             
         - name: "Build apk --release"
           run: |
             flutter pub get
