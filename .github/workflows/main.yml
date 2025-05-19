@@ -17,8 +17,10 @@ jobs:
              
         - name: "Build apk --release"
           run: |
-            flutter pub get
-            flutter build apk --release
+             working-directory: ./
+                  flutter pub get
+             working-directory: ./
+               flutter build apk --release
             
             
             
