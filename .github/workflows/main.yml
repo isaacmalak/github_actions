@@ -25,12 +25,17 @@ jobs:
         - name: "build apk release"    
           run: flutter build apk --release
           
+        - name: Build AAB
+          run: flutter build appbundle --release
+          
         - name: Create GitHub Release
           uses: softprops/action-gh-release@v1
           with:
              tag_name: v1.0.${{ github.run_number }}
              name: Release v1.0.${{ github.run_number }}
-             files: build/app/outputs/flutter-apk/app-release.apk
+             files: |
+                build/app/outputs/flutter-apk/app-release.apk
+                build/app/outputs/bundle/release/app-release.aab
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
