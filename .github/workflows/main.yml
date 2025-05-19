@@ -25,11 +25,11 @@ jobs:
         - name: "build apk release"    
           run: flutter build apk --release
           
-        - name: Upload APK as Release
-          uses: ncipollo/release-action@v1
+        - name: Create GitHub Release
+          uses: softprops/action-gh-release@v1
           with:
-            tag: v1.0.${{ github.run_number }}
-            name: "Release v1.0.${{ github.run_number }}"
-            artifacts: build/app/outputs/flutter-apk/app-release.apk
-            token: ${{ secrets.GITHUB_TOKEN }}
+             files: build/app/outputs/flutter-apk/app-release.apk
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
             
