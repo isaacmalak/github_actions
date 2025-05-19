@@ -15,10 +15,11 @@ jobs:
         - name: "Using flutter version"
           uses: subosito/flutter-action@v2
              
-        - name: "Build apk --release"
-          run: |
-             flutter pub get
-             flutter build apk --release
+        - name: "geting depenncies"
+          run: flutter pub get
+             
+        - name: "build apk release"    
+          run: flutter build apk --release
             
             
             
