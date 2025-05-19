@@ -1,0 +1,42 @@
+
+   # i dont know what i am doing 
+name: build apk whenever main push
+on: 
+   push:
+    branches:
+      - main
+          
+jobs:  
+  build_apk:
+      name: "Build release apk"
+      runs-on:
+        - ubuntu-latest
+      
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        - name: "Using flutter version"
+          uses: subosito/flutter-action@v2
+             
+        - name: "geting depenncies"
+          run: flutter pub get
+             
+        - name: "build apk release"    
+          run: flutter build apk --release
+          
+        - name: Build AAB
+          run: flutter build appbundle --release
+          
+        - name: Create GitHub Release
+          uses: softprops/action-gh-release@v1
+          with:
+             tag_name: v1.0.${{ github.run_number }}
+             name: Release v1.0.${{ github.run_number }}
+             files: |
+                build/app/outputs/flutter-apk/app-release.apk
+                build/app/outputs/bundle/release/app-release.aab
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            
