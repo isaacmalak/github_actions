@@ -1,32 +1,22 @@
 
    # i dont know what i am doing 
-name: build apk and add to github release
+name: build apk whenever main push
 on: 
-  workflow_dispatch:
-    inputs:
-      name: 
-        description: "name of you"
-        required: true
-        type: string
-      actions: 
-        description: "this is an action"
-        required: true
-        type: choice
-        options:
-          - Action 1
-          - Action 2
-          - Action 3
+   push:
+    branches:
+      - main
           
 jobs:  
-  action:
-      name: "choosing an action"
+  build_apk:
+      name: "Build release apk"
       runs-on:
         - ubuntu-latest
       steps:
-        - name: "choosing an action"
+        - name: "Build apk --release"
           run: |
-            echo "You are: ${{github.events.inputs.name}}"
-            echo "You have choosed : ${{github.events.inputs.action}}"
+            flutter pub get
+            flutter build apk --release
+            
             
             
   
