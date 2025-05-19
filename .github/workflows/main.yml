@@ -18,19 +18,6 @@ jobs:
 
         - name: "Using flutter version"
           uses: subosito/flutter-action@v2
-          
-        - name: Generate release keystore
-          run: |
-             keytool -genkey -v \
-               -keystore android/app/my-release-key.keystore \
-               -alias ${{ secrets.KEY_ALIAS }} \
-               -keyalg RSA \
-               -keysize 2048 \
-               -validity 10000 \
-               -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
-               -keypass ${{ secrets.KEY_PASSWORD }} \
-               -dname "CN=Isaac Malak, OU=password, O=password, L=Tampa, S=Florida, C=US"
-
              
         - name: "geting depenncies"
           run: flutter pub get
