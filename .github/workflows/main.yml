@@ -25,11 +25,6 @@ jobs:
         - name: Decode Keystore
           run: |
             echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
-        - name: Print key.properties
-          run: |
-             echo "------ key.properties contents ------"
-             cat android/app/keystore.jks
-             echo "-------------------------------------"
 
           
         - name: Create key.properties
@@ -38,6 +33,12 @@ jobs:
              echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
              echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
              echo "storeFile=keystore.jks" >> android/key.properties
+             
+        - name: Print key.properties
+          run: |
+             echo "------ key.properties contents ------"
+             cat android/key.properties
+             echo "-------------------------------------"
             
         - name: "build apk release"    
           run: flutter build apk --release
