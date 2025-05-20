@@ -1,58 +1,47 @@
-
 name: build apk whenever main push
-on: 
-   push:
+on:
+  push:
     branches:
       - main
-          
-jobs:  
+
+jobs:
   build_apk:
-      name: "Build release apk"
-      runs-on:
-        - ubuntu-latest
-      
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v4
+    env:
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+    name: "Build release apk"
+    runs-on:
+      - ubuntu-latest
 
-        - name: "Using flutter version"
-          uses: subosito/flutter-action@v2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-        - name: "geting depenncies"
-          run: flutter pub get
-          
-        - name: Decode Keystore
-          run: |
-            echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
+      - name: "Using flutter version"
+        uses: subosito/flutter-action@v2
 
-          
-        - name: Create key.properties
-          run: |
-             echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" > android/key.properties
-             echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
-             echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
-             echo "storeFile=keystore.jks" >> android/key.properties
-             
-        - name: Print key.properties
-          run: |
-             echo "------ key.properties contents ------"
-             cat android/key.properties
-             echo "-------------------------------------"
-            
-        - name: "build apk release"    
-          run: flutter build apk --release
-          
-        - name: Build AAB
-          run: flutter build appbundle --release
-          
-        - name: Create GitHub Release
-          uses: softprops/action-gh-release@v1
-          with:
-             tag_name: v1.0.${{ github.run_number }}
-             name: Release v1.0.${{ github.run_number }}
-             files: |
-                build/app/outputs/flutter-apk/app-release.apk
-                build/app/outputs/bundle/release/app-release.aab
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-           
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > export_keystore.jks
+          echo "STORE_FILE=$(pwd)/export_keystore.jks" >> $GITHUB_ENV
+
+      - name: "geting depenncies"
+        run: flutter pub get
+
+      - name: "build apk release"
+        run: flutter build apk --release
+
+      - name: Build AAB
+        run: flutter build appbundle --release
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Release v1.0.${{ github.run_number }}
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

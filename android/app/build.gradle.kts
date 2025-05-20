@@ -14,12 +14,14 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
-val keyAlias = keystoreProperties["keyAlias"] ?: System.getenv("KEY_ALIAS")
-val keyPassword = keystoreProperties["keyPassword"] ?: System.getenv("KEY_PASSWORD")
-val storeFile = (keystoreProperties["storeFile"] ?: System.getenv("STORE_FILE"))?.let { file(it) } 
-val storePassword = keystoreProperties["storePassword"] ?: System.getenv("STORE_PASSWORD")
+val myKeyAlias = keystoreProperties["keyAlias"] ?: System.getenv("KEY_ALIAS")
+val myKeyPassword = keystoreProperties["keyPassword"] ?: System.getenv("KEY_PASSWORD")
+val myStoreFile = (keystoreProperties["storeFile"] ?: System.getenv("STORE_FILE"))?.let { file(it) } 
+val myStorePassword = keystoreProperties["storePassword"] ?: System.getenv("STORE_PASSWORD")
 
-println("keyAlias: $keyAlias keyPassword: $keyPassword storeFile: $storeFile storePassword: $storePassword")
+if (myKeyAlias == null || myKeyPassword == null || myStoreFile == null || myStorePassword == null) {
+    throw NullPointerException("Signing configuration is missing\nPlease check key.properties file or environment variables")
+}
 
 android {
     namespace = "com.example.flutter_application_1"
@@ -37,10 +39,10 @@ android {
 
      signingConfigs {
         create("release") {
-            keyAlias = keyAlias
-            keyPassword = keyPassword
-            storeFile   = storeFile
-            storePassword  = storePassword
+            storeFile = myStoreFile as File
+            storePassword = myStorePassword as String
+            keyAlias = myKeyAlias as String
+            keyPassword = myKeyPassword as String
         }
     }
     defaultConfig {
@@ -48,21 +50,21 @@ android {
         applicationId = "com.example.flutter_application_1"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
-    }
+            minSdk = flutter.minSdkVersion
+            targetSdk = flutter.targetSdkVersion
+            versionCode = flutter.versionCode
+            versionName = flutter.versionName
+        }
 
-    buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("release")
+        buildTypes {
+            release {
+                // TODO: Add your own signing config for the release build.
+                // Signing with the debug keys for now, so `flutter run --release` works.
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
-}
 
-flutter {
-    source = "../.."
-}
+    flutter {
+        source = "../.."
+    }
