@@ -1,5 +1,4 @@
 
-   # i dont know what i am doing 
 name: build apk whenever main push
 on: 
    push:
