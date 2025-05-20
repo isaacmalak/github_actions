@@ -14,6 +14,13 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
+val keyAlias = keystoreProperties["keyAlias"] ?: System.getenv("KEY_ALIAS")
+val keyPassword = keystoreProperties["keyPassword"] ?: System.getenv("KEY_PASSWORD")
+val storeFile = (keystoreProperties["storeFile"] ?: System.getenv("STORE_FILE"))?.let { file(it) } 
+val storePassword = keystoreProperties["storePassword"] ?: System.getenv("STORE_PASSWORD")
+
+println("keyAlias: $keyAlias keyPassword: $keyPassword storeFile: $storeFile storePassword: $storePassword")
+
 android {
     namespace = "com.example.flutter_application_1"
     compileSdk = flutter.compileSdkVersion
@@ -30,10 +37,10 @@ android {
 
      signingConfigs {
         create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
-            storePassword = keystoreProperties["storePassword"] as String
+            keyAlias = keyAlias
+            keyPassword = keyPassword
+            storeFile   = storeFile
+            storePassword  = storePassword
         }
     }
     defaultConfig {
