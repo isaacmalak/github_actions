@@ -28,7 +28,7 @@ jobs:
         - name: Print key.properties
           run: |
              echo "------ key.properties contents ------"
-             cat android/app/key.properties
+             cat android/app/keystore.jks
              echo "-------------------------------------"
 
           
